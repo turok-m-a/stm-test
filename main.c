@@ -76,7 +76,6 @@ void spiInit(){
 	GPIOA->OSPEEDR |= GPIO_OSPEEDER_OSPEEDR7; //MOSI
 	GPIOE->OSPEEDR |= GPIO_OSPEEDER_OSPEEDR3; //CS
 	GPIOE->ODR |= 8; //0b1000 CS HIGH
-	for (int i=0; i<1000;i++);
 	SPI1->CR1 |= SPI_CR1_SSM;
 	SPI1->CR1 |= SPI_CR1_SSI;
 	SPI1->CR1 |= 0x38; // lowest clk
@@ -84,14 +83,13 @@ void spiInit(){
 	SPI1->CR1 |= SPI_CR1_CPOL; 
 	SPI1->CR1 |= SPI_CR1_CPHA;
 	SPI1->CR1 |= SPI_CR1_SPE;
-	for (int i=0; i<50000;i++);
+	for (int i=0; i<100000;i++); //pause before first transaction after enabling SPI is necessary
 	GPIOE->ODR &= ~8; //CS LOW
 	SPI1->DR = 0x008F;
 	while(!(SPI1->SR & SPI_SR_RXNE) || (SPI1->SR & SPI_SR_BSY));//wait for byte receive
 	char dummy = SPI1->DR;
 	SPI1->DR = dummy;
 	while(!(SPI1->SR & SPI_SR_RXNE) || (SPI1->SR & SPI_SR_BSY));//wait for byte receive
-	//for (int i=0; i<50000;i++); 
 	unsigned char id = SPI1->DR;
 	if (id == 0x3F ){
 		GPIOD->BSRRL |= GPIO_BSRR_BS_15;//successful communication with accelerometer
@@ -102,14 +100,12 @@ void spiInit(){
 	SPI1->DR = 0x0020; //CR4, enable accelerometer
 	while(!(SPI1->SR & SPI_SR_RXNE) || (SPI1->SR & SPI_SR_BSY));//wait for byte receive
 	dummy = SPI1->DR;
-	//for (int i=0; i<100000;i++);
 	SPI1->DR = 0x27;
 	while(!(SPI1->SR & SPI_SR_RXNE) || (SPI1->SR & SPI_SR_BSY));//wait for byte receive
-	//for (int i=0; i<50000;i++);
 	dummy = SPI1->DR;
 	GPIOE->ODR |= 8; //CS HIGH
 	
-	//for (int i=0; i<100000;i++);
+	//for (int i=0; i<10;i++);
 	//use for custom sensitivity
 //		GPIOE->ODR &= ~8; //CS LOW 
 //	SPI1->DR = 0x0024;
