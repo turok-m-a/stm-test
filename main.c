@@ -16,11 +16,11 @@ void GPIO_Init (void);
          s[j] = c;
      }
  }
-const struct maxAccelerations {	// "callibration" (max/min readings at +/- free fall acceeration)
+const struct maxAccelerations {	// "callibration" (max/min readings at +/- 90 degree)
 	 short int posMaxVals[3];
 	 short int negMinVals[3];
  } 
-//maxAccelerations_ = {{19558,16666,18102},{-17928,-17388,-17369}}; //measured while rotating
+//maxAccelerations_ = {{19558,16666,18102},{-17928,-17388,-17369}}; //measured max values while rotating
 maxAccelerations_ = {{16600,16600,16650},{-17400,-16900,-16400}}; //measured at +/- 90 degree
 //maxAccelerations_ = {{16384,16384,16384},{-16384,-16384,-16384}}; //ideal
  short int readingsToDegrees(short int reading,char axis,char negative){
@@ -152,7 +152,6 @@ void sendStringToUart(char * s,char axis){
 	for (int i=0; i<5000;i++);
 }
 void sendValsToUart(short int * val){
-	for (int i=0; i<50000;i++);
 	for (int i = 0;i<3;i++){
 	char negative = 0;
 	if (val[i] < 0){
